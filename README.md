@@ -10,7 +10,7 @@ configuring the databases for replication, Both  master and slave can be configu
 Requirements
 ------------
 
-None
+This role requires ansible 1.4 or higher and platform requirements are listed in the metadata file.
 
 Role Variables
 --------------
@@ -102,5 +102,6 @@ BSD
 Author Information
 ------------------
 
-Ansible staff 
+Benno Joy
+ 
 
