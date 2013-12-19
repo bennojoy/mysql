@@ -1,9 +1,9 @@
 MySQL Server
 ============
 
-This roles helps to install MySQL  server across RHEL and Ubuntu variants.
-Apart from installing the MySQL server, it applies basic hardening, like
-securing the root account with password, and remove test databases. The role
+This roles helps to install MySQL Server across RHEL and Ubuntu variants.
+Apart from installing the MySQL Server, it applies basic hardening, like
+securing the root account with password, and removing test databases. The role
 can also be used to add databases to the MySQL server and create users in the
 database. It also supports configuring the databases for replication--both
 master and slave can be configured via this role.
@@ -73,7 +73,7 @@ database or users.
 Note: If users are specified and password/privileges are not specified, then
 default values are set.
 
-3) Install mysql server and create 2 databases and 2 users and configure the
+3) Install MySQL Server and create 2 databases and 2 users and configure the
 database as replication master with one database configured for replication.
 
       - hosts: all
