@@ -57,7 +57,7 @@
 
 - name: Create the database users
   mysql_user: name={{ item.name }}  password={{ item.pass|default("foobar") }}  
-                priv={{ item.priv|default("*.*:ALL") }} state=present
+                priv={{ item.priv|default("*.*:ALL") }} state=present host={{ item.host | default("localhost") }}
   with_items: mysql_users
   when: mysql_users|lower() != 'none'
 
