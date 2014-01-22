@@ -20,9 +20,17 @@ Role Variables
 The variables that can be passed to this role and a brief description about
 them are as follows:
 
-      mysql_port: 3306                 # The port for mysql server to listen
-      mysql_bind_address: "0.0.0.0"    # The bind address for mysql server
-      mysql_root_db_pass: foobar       # The root DB password
+      # The port for mysql server to listen
+      mysql_port: 3306
+
+      # The bind address for mysql server, defaults to "127.0.0.1"
+      # Set it to your public "0.0.0.0" to allow external connections
+      # (i.e. for replication)
+      mysql_bind_address: "127.0.0.1"
+
+      # The root DB password
+      # by default the value is null and your root DB password is left untouched
+      mysql_root_db_pass: foobar
 
       # A list that has all the databases to be
       # created and their replication status:
@@ -59,16 +67,19 @@ database or users.
 
       - hosts: all
         roles:
-        - {role: mysql, root_db_pass: foobar, mysql_db: none, mysql_users: none }
+        - role: mysql
+          mysql_root_db_pass: foobar
 
 2) Install MySQL Server and create 2 databases and 2 users.
 
       - hosts: all
         roles:
-         - {role: mysql, mysql_db: [{name: benz},
-                                    {name: benz2}],
-            mysql_users: [{name: ben3, pass: foobar, priv: "*.*:ALL"},
-                          {name: ben2, pass: foo}] }
+          - role: mysql
+            mysql_root_db_pass: foobar
+            mysql_db: [{name: benz}, {name: benz2}]
+            mysql_users:
+              - {name: ben3, pass: foobar, priv: "*.*:ALL"}
+              - {name: ben2, pass: foo}
 
 Note: If users are specified and password/privileges are not specified, then
 default values are set.
@@ -78,27 +89,37 @@ database as replication master with one database configured for replication.
 
       - hosts: all
         roles:
-         - {role: mysql, mysql_db: [{name: benz, replicate: yes },
-                                    { name: benz2, replicate: no}], 
-                         mysql_users: [{name: ben3, pass: foobar, priv: "*.*:ALL"},
-                                       {name: ben2, pass: foo}],
-                         mysql_repl_user: [{name: repl, pass: foobar}] }
+         - role: mysql
+           mysql_root_db_pass: foobar
+           mysql_db:
+             - {name: benz, replicate: yes }
+             - {name: benz2, replicate: no}
+           mysql_users:
+             - {name: ben3, pass: foobar, priv: "*.*:ALL"}
+             - {name: ben2, pass: foo}
+           mysql_repl_user: [{name: repl, pass: foobar}]
 
 4) A fully installed/configured MySQL Server with master and slave
 replication.
 
       - hosts: master
         roles:
-         - {role: mysql, mysql_db: [{name: benz}, {name: benz2}],
-                         mysql_users: [{name: ben3, pass: foobar, priv: "*.*:ALL"},
-                                       {name: ben2, pass: foo}],
-                         mysql_db_id: 8 }
+         - role: mysql
+           mysql_db: [{name: benz}, {name: benz2}]
+           mysql_users:
+             - {name: ben3, pass: foobar, priv: "*.*:ALL"},
+             - {name: ben2, pass: foo}
+           mysql_db_id: 8
 
       - hosts: slave
         roles:
-         - {role: mysql, mysql_db: none, mysql_users: none,
-                  mysql_repl_role: slave, mysql_repl_master: vm2,
-                  mysql_db_id: 9, mysql_repl_user: [{name: repl, pass: foobar}] }
+         - role: mysql
+           mysql_db: none
+           mysql_users: none
+           mysql_repl_role: slave
+           mysql_repl_master: vm2
+           mysql_db_id: 9
+           mysql_repl_user: [{name: repl, pass: foobar}] }
 
 Note: When configuring the full replication please make sure the master is
 configured via this role and the master is available in inventory and facts
