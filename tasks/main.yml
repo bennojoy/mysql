@@ -28,7 +28,7 @@
    - 127.0.0.1
    - ::1
    - localhost
-  when: ansible_hostname != 'localhost' 
+  when: mysql_root_db_pass and ansible_hostname != 'localhost'
 
 - name: update mysql root password for all root accounts
   mysql_user: name=root host={{ item }} password={{ mysql_root_db_pass }}
@@ -36,10 +36,11 @@
    - 127.0.0.1
    - ::1
    - localhost
-  when: ansible_hostname == 'localhost' 
+  when: mysql_root_db_pass and ansible_hostname == 'localhost'
 
 - name: copy .my.cnf file with root password credentials
   template: src=.my.cnf.j2 dest=~/.my.cnf mode=0600
+  when: mysql_root_db_pass
 
 - name: ensure anonymous users are not in the database
   mysql_user: name='' host={{ item }} state=absent
