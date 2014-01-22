@@ -1,23 +1,14 @@
 ---
 
 mysql_port: 3306
-mysql_bind_address: "0.0.0.0"
-mysql_root_db_pass: foobar
+mysql_bind_address: "127.0.0.1"
+mysql_root_db_pass: null
 
-mysql_db: 
-     - name: foo
-       replicate: yes
-     - name: bar
-       replicate: no
+mysql_db: []
 
-mysql_users:
-     - name: benz
-       pass: foobar
-       priv: "*.*:ALL"
+mysql_users: []
 
-mysql_repl_user:
-  - name: repl
-    pass: foobar
+mysql_repl_user: []
 
 mysql_repl_role: master
 mysql_db_id: 7
