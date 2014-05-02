@@ -59,7 +59,7 @@ database or users.
 
       - hosts: all
         roles:
-        - {role: mysql, root_db_pass: foobar, mysql_db: none, mysql_users: none }
+        - {role: mysql, mysql_root_db_pass: foobar, mysql_db: none, mysql_users: none }
 
 2) Install MySQL Server and create 2 databases and 2 users.
 
