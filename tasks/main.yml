@@ -18,6 +18,11 @@
   notify: 
    - restart mysql
 
+- name: Create the directory /etc/mysql/conf.d
+  file: path=/etc/mysql/conf.d state=directory
+  notify:
+   - restart mysql
+
 - name: Start the mysql services Redhat
   service: name={{ mysql_service }} state=started enabled=yes
 
