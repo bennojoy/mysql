@@ -27,7 +27,7 @@
   service: name={{ mysql_service }} state=started enabled=yes
 
 - name: update mysql root password for all root accounts
-  mysql_user: name=root host={{ item }} password={{ mysql_root_db_pass }}
+  mysql_user: name=root host={{ item }} password="{{ mysql_root_db_pass }}"
   with_items:
    - "{{ ansible_hostname }}"
    - 127.0.0.1
@@ -36,7 +36,7 @@
   when: ansible_hostname != 'localhost' 
 
 - name: update mysql root password for all root accounts
-  mysql_user: name=root host={{ item }} password={{ mysql_root_db_pass }}
+  mysql_user: name=root host={{ item }} password="{{ mysql_root_db_pass }}"
   with_items:
    - 127.0.0.1
    - ::1
@@ -61,13 +61,13 @@
   when: mysql_db|lower() != 'none'
 
 - name: Create the database users
-  mysql_user: name={{ item.name }}  password={{ item.pass|default("foobar") }}  
+  mysql_user: name={{ item.name }}  password="{{ item.pass|default("foobar") }}"
                 priv={{ item.priv|default("*.*:ALL") }} state=present host={{ item.host | default("localhost") }}
   with_items: mysql_users
   when: mysql_users|lower() != 'none'
 
 - name: Create the replication users
-  mysql_user: name={{ item.name }}  host="%" password={{ item.pass|default("foobar") }}  
+  mysql_user: name={{ item.name }}  host="%" password="{{ item.pass|default("foobar") }}"
                 priv=*.*:"REPLICATION SLAVE" state=present
   with_items: mysql_repl_user
   when: mysql_repl_role == 'master'
@@ -89,7 +89,7 @@
   when: slave|failed and mysql_repl_role == 'slave' and mysql_repl_master is defined
 
 - name: Change the master in slave to start the replication
-  mysql_replication: mode=changemaster master_host={{ mysql_repl_master }} master_log_file={{ repl_stat.File }} master_log_pos={{ repl_stat.Position }} master_user={{ mysql_repl_user[0].name }} master_password={{ mysql_repl_user[0].pass }}
+  mysql_replication: mode=changemaster master_host={{ mysql_repl_master }} master_log_file={{ repl_stat.File }} master_log_pos={{ repl_stat.Position }} master_user={{ mysql_repl_user[0].name }} master_password="{{ mysql_repl_user[0].pass }}"
   when: slave|failed and mysql_repl_role == 'slave' and mysql_repl_master is defined
 
 
