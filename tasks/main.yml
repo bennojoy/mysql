@@ -55,7 +55,7 @@
 - name: remove the test database
   mysql_db: name=test state=absent
 
-- name: Create the database's
+- name: Create the databases
   mysql_db: name={{ item.name }} state=present
   with_items: mysql_db
   when: mysql_db|lower() != 'none'
