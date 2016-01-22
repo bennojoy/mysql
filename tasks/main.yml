@@ -10,7 +10,7 @@
 - name: Install the mysql packages in Debian derivatives
   apt: name={{ item }} state=installed update_cache=yes
   with_items: mysql_pkgs
-  environment: env
+  environment: "{{ env }}"
   when: ansible_os_family == 'Debian'
 
 - name: Copy the my.cnf file 
@@ -61,14 +61,12 @@
   when: mysql_db|lower() != 'none'
 
 - name: Create the database users
-  mysql_user: name={{ item.name }}  password={{ item.pass|default("foobar") }}  
-                priv={{ item.priv|default("*.*:ALL") }} state=present host={{ item.host | default("localhost") }}
+  mysql_user: name={{ item.name }}  password={{ item.pass|default("foobar") }} priv={{ item.priv|default("*.*:ALL") }} state=present host={{ item.host | default("localhost") }}
   with_items: mysql_users
   when: mysql_users|lower() != 'none'
 
 - name: Create the replication users
-  mysql_user: name={{ item.name }}  host="%" password={{ item.pass|default("foobar") }}  
-                priv=*.*:"REPLICATION SLAVE" state=present
+  mysql_user: name={{ item.name }}  host="%" password={{ item.pass|default("foobar") }} priv=*.*:"REPLICATION SLAVE" state=present
   with_items: mysql_repl_user
   when: mysql_repl_role == 'master'
 
@@ -79,7 +77,7 @@
   when: mysql_repl_role == 'slave'
 
 - name: Ensure the hostname entry for master is available for the client.
-  lineinfile: dest=/etc/hosts regexp="{{ mysql_repl_master }}" line="{{ hostvars[mysql_repl_master].ansible_default_ipv4.address + "   " + mysql_repl_master }}" state=present
+  lineinfile: dest=/etc/hosts regexp='{{ mysql_repl_master }}' line='{{ hostvars[mysql_repl_master].ansible_default_ipv4.address + "   " + mysql_repl_master }}' state=present
   when: slave|failed and mysql_repl_role == 'slave' and mysql_repl_master is defined
 
 - name: Get the current master servers replication status
