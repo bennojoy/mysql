@@ -25,6 +25,11 @@
   notify:
    - restart mysql
 
+- name: Depploy mysql config to conf.d
+  template: src=mysql.cnf.j2 dest=/etc/mysql/conf.d/mysql.cnf
+  notify:
+    - restart mysql
+
 - name: Start the mysql services
   service: name={{ mysql_service }} state=started enabled=yes
 
