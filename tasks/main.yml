@@ -4,12 +4,14 @@
 
 - name: Install the mysql packages in Redhat derivatives
   yum: name={{ item }} state=installed
-  with_items: mysql_pkgs
+  with_items: 
+    - "{{ mysql_pkgs }}"
   when: ansible_os_family == 'RedHat'
 
 - name: Install the mysql packages in Debian derivatives
   apt: name={{ item }} state=installed update_cache=yes
-  with_items: mysql_pkgs
+  with_items: 
+    - "{{ mysql_pkgs }}"
   environment: env
   when: ansible_os_family == 'Debian'
 
@@ -57,19 +59,22 @@
 
 - name: Create the database's
   mysql_db: name={{ item.name }} state=present
-  with_items: mysql_db
+  with_items: 
+    - "{{ mysql_db }}"
   when: mysql_db|lower() != 'none'
 
 - name: Create the database users
   mysql_user: name={{ item.name }}  password={{ item.pass|default("foobar") }}  
                 priv={{ item.priv|default("*.*:ALL") }} state=present host={{ item.host | default("localhost") }}
-  with_items: mysql_users
+  with_items: 
+    - "{{ mysql_users }}"
   when: mysql_users|lower() != 'none'
 
 - name: Create the replication users
   mysql_user: name={{ item.name }}  host="%" password={{ item.pass|default("foobar") }}  
                 priv=*.*:"REPLICATION SLAVE" state=present
-  with_items: mysql_repl_user
+  with_items: 
+    - "{{ mysql_repl_user }}"
   when: mysql_repl_role == 'master'
 
 - name: Check if slave is already configured for replication
