@@ -51,6 +51,15 @@ them are as follows:
       # A unique id for the mysql server (used in replication):
       mysql_db_id: 7
 
+      # Other settings
+      mysql_key_buffer: 16M
+      mysql_max_allowed_packet: 16M
+      mysql_thread_stack: 192K
+      mysql_thread_cache_size: 8
+      
+      mysql_query_cache_limit: 1M
+      mysql_query_cache_size: 16M
+
 Examples
 --------
 

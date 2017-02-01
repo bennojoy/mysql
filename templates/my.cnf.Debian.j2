@@ -23,13 +23,13 @@ skip-external-locking
 
 bind-address		= {{ mysql_bind_address }}
 
-key_buffer		= 16M
-max_allowed_packet	= 16M
-thread_stack		= 192K
-thread_cache_size       = 8
+key_buffer		= {{ mysql_key_buffer }}
+max_allowed_packet	= {{ mysql_max_allowed_packet }}
+thread_stack		= {{ mysql_thread_stack }}
+thread_cache_size       = {{ mysql_thread_cache_size }}
 
-query_cache_limit	= 1M
-query_cache_size        = 16M
+query_cache_limit	= {{ mysql_query_cache_limit }}
+query_cache_size        = {{ mysql_query_cache_size }}
 log_error = /var/log/mysql/error.log
 server-id               = {{ mysql_db_id }}
 
