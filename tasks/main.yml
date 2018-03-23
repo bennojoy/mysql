@@ -1,6 +1,11 @@
 ---
 - name: Add the OS specific variables
   include_vars: "{{ ansible_os_family }}.yml"
+  
+- name: Install the mysql repositories in Redhat derivatives
+  yum: name={{ item }} state=installed
+  with_items: repos
+  when: ansible_os_family == 'RedHat'
 
 - name: Install the mysql packages in Redhat derivatives
   yum: name={{ item }} state=installed
