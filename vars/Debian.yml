@@ -1,9 +1,9 @@
 ---
 
 mysql_pkgs:
-  - python-selinux
+  - "{{ ansible_python.executable | regex_replace('/usr/bin/') }}-selinux" # either python-selinux or python3-selinux
   - mysql-server
-  - python-mysqldb
+  - "{{ ansible_python.executable | regex_replace('/usr/bin/') }}-mysqldb" # either python-mysqldb or python3-mysqldb
 
 mysql_service: mysql
 mysql_conf_dir: "/etc/mysql/"
