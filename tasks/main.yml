@@ -3,13 +3,13 @@
   include_vars: "{{ ansible_os_family }}.yml"
 
 - name: Install the mysql packages in Redhat derivatives
-  yum: name={{ item }} state=installed
+  yum: name={{ item }} state=present
   with_items:
     - "{{ mysql_pkgs }}"
   when: ansible_os_family == 'RedHat'
 
 - name: Install the mysql packages in Debian derivatives
-  apt: name={{ item }} state=installed update_cache=yes
+  apt: name={{ item }} state=present update_cache=yes
   with_items:
     - "{{ mysql_pkgs }}"
   environment: "{{ env }}"
@@ -90,16 +90,14 @@
 
 - name: Ensure the hostname entry for master is available for the client.
   lineinfile: dest=/etc/hosts regexp="{{ mysql_repl_master }}" line="{{ hostvars[mysql_repl_master].ansible_default_ipv4.address + "   " + mysql_repl_master }}" state=present
-  when: slave|failed and mysql_repl_role == 'slave' and mysql_repl_master is defined
+  when: slave is failed and mysql_repl_role == 'slave' and mysql_repl_master is defined
 
 - name: Get the current master servers replication status
   mysql_replication: mode=getmaster
   delegate_to: "{{ mysql_repl_master }}"
   register: repl_stat
-  when: slave|failed and mysql_repl_role == 'slave' and mysql_repl_master is defined
+  when: slave is failed and mysql_repl_role == 'slave' and mysql_repl_master is defined
 
 - name: Change the master in slave to start the replication
   mysql_replication: mode=changemaster master_host={{ mysql_repl_master }} master_log_file={{ repl_stat.File }} master_log_pos={{ repl_stat.Position }} master_user={{ mysql_repl_user[0].name }} master_password={{ mysql_repl_user[0].pass }}
-  when: slave|failed and mysql_repl_role == 'slave' and mysql_repl_master is defined
-
-
+  when: slave is failed and mysql_repl_role == 'slave' and mysql_repl_master is defined
